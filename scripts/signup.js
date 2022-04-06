@@ -87,6 +87,8 @@ password2.addEventListener("blur", function(event){
 });
 
 form.addEventListener("submit", function(event){
+    event.preventDefault();
+
     let a = validaCampo(nome);
     let b = validaCampo(apelido);
     let c = validaCampo(email);
@@ -94,7 +96,7 @@ form.addEventListener("submit", function(event){
     let e = validaCampo(password2);
 
     if (a == 1 || b==1 || c == 1 || d==1 || e == 1){
-        event.preventDefault();
+        alert('Verifique os campos obrigatórios');
     };
 
     if (validarSenha()){
@@ -113,9 +115,39 @@ form.addEventListener("submit", function(event){
 
         password.after(erro);
         password2.after(erro2);
-        event.preventDefault();
+
+        alert('Verifique as senhas digitadas')
     }
 
-})
+    //Criação do objeto para API:
+    //1 - Informações:
+    let data = {
+        firstName: nome.value,
+        lastName: apelido.value,
+        email: email.value,
+        password: password.value
+    };
 
+    //2 - Pacote de configurações:
+    let settings = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    };
+
+    //3 - Mandar para API:
+    fetch('https://ctd-todo-api.herokuapp.com/v1/users', settings)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(info){
+            console.log(info);
+        })
+        .catch(function(error){
+            console.log(error);
+        })
+
+})
 

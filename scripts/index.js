@@ -50,10 +50,41 @@ password.addEventListener("blur", function(event){
 });
 
 form.addEventListener("submit", function(event){
+    event.preventDefault();
     let a = validaCampo(email);
     let b = validaCampo(password);
 
     if (a == 1 || b==1){
-        event.preventDefault();
+        alert('Verifique os campos obrigatórios');
     }
+
+    //Criação do objeto para API:
+    //1 - Informações:
+    let data = {
+        email: email.value,
+        password: password.value
+    };
+
+    //2 - Pacote de configurações:
+    let settings = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    };
+
+    //3 - Mandar para API:
+    fetch('https://ctd-todo-api.herokuapp.com/v1/users/login', settings)
+        .then(function(response){
+            return response.json();
+        })
+        .then(function(info){
+            console.log(info);
+        })
+        .catch(function(error){
+            console.log(error);
+        })
 })
+
+

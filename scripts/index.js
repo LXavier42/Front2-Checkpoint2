@@ -83,6 +83,9 @@ form.addEventListener("submit", function(event){
             console.log(info);
             localStorage.setItem("jwt", info.jwt);
         })
+        .then(function(){
+            window.location.href = "./tarefas.html";
+        })
         .catch(function(error){
             console.log(error);
         })

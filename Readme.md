@@ -1,6 +1,9 @@
 Melhorias:
     - [ ] Criação de função de chamada de API no Utils
-    - [ ]  Verificar com o professor primeira parte da Aula
+    - [ ] Verificar com o professor primeira parte da Aula
+    - [ ] Criar funções para tarefas.js
+    - [ ] Melhorar CSS da validação de erros no login
+    - [ ] Entender com o prof evento correto para finalizar uma tarefa
 
 Tarefas:
     - [X] Criar um script tasks.js vinculado com tarefas.html

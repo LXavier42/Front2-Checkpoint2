@@ -27,6 +27,18 @@ function validaCampo(campo){
     }
 }
 
+function validaLogin(resposta, campo){
+    if (resposta === undefined){
+        ocultarSpinner();
+        campo.classList.add("error");
+        const erro = document.createElement("small");
+        erro.innerText = "Usuário e/ou senha incorretos";
+        erro.classList.add("error");
+        campo.after(erro);
+        return 1;
+    }
+}
+
 //Selecionando elementos:
 let form = document.querySelector("form");
 let email = seletorId('inputEmail');
@@ -51,44 +63,49 @@ password.addEventListener("blur", function(event){
 
 form.addEventListener("submit", function(event){
     event.preventDefault();
+    mostrarSpinner();
+
     let a = validaCampo(email);
     let b = validaCampo(password);
 
     if (a == 1 || b==1){
         alert('Verifique os campos obrigatórios');
+        ocultarSpinner();
+    }else{
+        //Criação do objeto para API:
+        //1 - Informações:
+        let data = {
+            email: email.value,
+            password: password.value
+        };
+
+        //2 - Pacote de configurações:
+        let settings = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        };
+
+        //3 - Mandar para API:
+        fetch('https://ctd-todo-api.herokuapp.com/v1/users/login', settings)
+            .then(function(response){
+                return response.json();
+            })
+            .then(function(info){
+                console.log(info);
+                localStorage.setItem("jwt", info.jwt);
+            })
+            .then(function(info){
+                if (validaLogin(info, password)!=1){;
+                    //window.location.href = "./tarefas.html";
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+            })
     }
-
-    //Criação do objeto para API:
-    //1 - Informações:
-    let data = {
-        email: email.value,
-        password: password.value
-    };
-
-    //2 - Pacote de configurações:
-    let settings = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
-    };
-
-    //3 - Mandar para API:
-    fetch('https://ctd-todo-api.herokuapp.com/v1/users/login', settings)
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(info){
-            console.log(info);
-            localStorage.setItem("jwt", info.jwt);
-        })
-        .then(function(){
-            window.location.href = "./tarefas.html";
-        })
-        .catch(function(error){
-            console.log(error);
-        })
 })
 
 

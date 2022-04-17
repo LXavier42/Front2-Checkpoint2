@@ -88,6 +88,7 @@ password2.addEventListener("blur", function(event){
 
 form.addEventListener("submit", function(event){
     event.preventDefault();
+    mostrarSpinner();
 
     let a = validaCampo(nome);
     let b = validaCampo(apelido);
@@ -96,10 +97,12 @@ form.addEventListener("submit", function(event){
     let e = validaCampo(password2);
 
     if (a == 1 || b==1 || c == 1 || d==1 || e == 1){
+        ocultarSpinner();
         alert('Verifique os campos obrigatórios');
     };
 
     if (validarSenha()){
+        ocultarSpinner();
         limparCampo(password);
         limparCampo(password2);
         password.classList.add("error");

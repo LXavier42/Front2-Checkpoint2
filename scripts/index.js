@@ -1,43 +1,15 @@
-
-//Validação do login:
-function seletorId(id){
-    return document.getElementById(id);
-}
-
-function empty(input){
-    return input.value.trim() ==="";
-}
-
-function limparCampo(campo){
-    if (campo.classList.contains("error")){
-        campo.classList.remove("error");
-        campo.nextSibling.remove();
-    }
-}
-
-function validaCampo(campo){
-    if (empty(campo)){
-        limparCampo(campo);
-        campo.classList.add("error");
-        const erro = document.createElement("small");
-        erro.innerText = "Campo obrigatório";
-        erro.classList.add("error");
-        campo.after(erro);
-        return 1;
-    }
-}
-
 function validaLogin(resposta, campo){
-    if (resposta === undefined){
+    if (resposta === undefined || resposta == "Contraseña incorrecta" || resposta == "El usuario no existe"){
         ocultarSpinner();
-        campo.classList.add("error");
-        const erro = document.createElement("small");
-        erro.innerText = "Usuário e/ou senha incorretos";
-        erro.classList.add("error");
-        campo.after(erro);
+        limparCampo(campo);
+        adicionarErro(campo,"Usuário e/ou senha incorreto(s)");
         return 1;
+    }else if(resposta == "Error del servidor"){
+            ocultarSpinner();
+            alert("Erro de servidor")
+            return 1;
+        }
     }
-}
 
 //Selecionando elementos:
 let form = document.querySelector("form");
@@ -50,7 +22,7 @@ email.addEventListener("keyup", function(event){
 })
 
 email.addEventListener("blur", function(event){    
-    validaCampo(email);
+    validaCampo(email,"Campo obrigatório");
 });
 
 password.addEventListener("keyup", function(event){
@@ -58,15 +30,15 @@ password.addEventListener("keyup", function(event){
 })
 
 password.addEventListener("blur", function(event){    
-    validaCampo(password);
+    validaCampo(password,"Campo obrigatório");
 });
 
 form.addEventListener("submit", function(event){
     event.preventDefault();
     mostrarSpinner();
 
-    let a = validaCampo(email);
-    let b = validaCampo(password);
+    let a = validaCampo(email,"Campo obrigatório");
+    let b = validaCampo(password,"Campo obrigatório");
 
     if (a == 1 || b==1){
         alert('Verifique os campos obrigatórios');
@@ -87,24 +59,25 @@ form.addEventListener("submit", function(event){
             },
             body: JSON.stringify(data)
         };
-
+        
         //3 - Mandar para API:
-        fetch('https://ctd-todo-api.herokuapp.com/v1/users/login', settings)
+        fetch(`https://ctd-todo-api.herokuapp.com/v1/users/login`, settings)
             .then(function(response){
                 return response.json();
             })
             .then(function(info){
-                console.log(info);
                 localStorage.setItem("jwt", info.jwt);
+                return info;
             })
             .then(function(info){
+                console.log(info);
                 if (validaLogin(info, password)!=1){;
-                    //window.location.href = "./tarefas.html";
+                    window.location.href = "./tarefas.html";
                 }
             })
             .catch(function(error){
                 console.log(error);
-            })
+            })        
     }
 })
 
